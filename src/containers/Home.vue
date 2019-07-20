@@ -9,10 +9,14 @@
 </template>
 
 <script>
-import { UserAgentApplication } from "msal";
-import { config } from "../config/auth";
+import { UserAgentApplication } from 'msal';
+import { config } from '../config/auth';
 
 const auth = new UserAgentApplication(config);
+
+const tokenConfig = {
+  scopes: [ 'User.Read' ]
+};
 
 auth.handleRedirectCallback((error, resolve) => {
   if (error) {
@@ -36,7 +40,14 @@ export default {
   },
   mounted() {
     this.account = auth.getAccount();
+
+    if (this.account) {
+      auth.acquireTokenSilent(tokenConfig)
+        .catch(() => auth.acquireTokenRedirect(tokenConfig))
+        .then(({ idToken }) => {
+          window.token = idToken.rawIdToken;
+        });
+    }
   }
 };
 </script>
-

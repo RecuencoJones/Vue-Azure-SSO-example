@@ -1,9 +1,11 @@
-const clientId = "05f6a96b-3f57-4dc6-aa21-66d82a44b1de";
+const clientId = process.env.VUE_APP_AAD_CLIENT_ID;
+const tenantId = process.env.VUE_APP_AAD_TENANT_ID;
 const redirectUri = window.location.origin;
 
 export const config = {
   auth: {
     clientId,
+    authority: `https://login.microsoftonline.com/${ tenantId }`,
     redirectUri,
     postLogoutRedirectUri: redirectUri
   }
